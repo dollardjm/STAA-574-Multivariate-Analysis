@@ -1,0 +1,514 @@
+---
+title: "STAA 574: Homework 2"
+subtitle: "Spring 2020"
+author: "Jon Dollard"
+output: 
+  pdf_document: 
+    keep_tex: yes
+    includes:
+        in_header: ../macros/preamble_common.tex
+        
+---
+
+```{r setup, include = FALSE}
+# echo = FALSE for Answer Key without R code, 
+# echo = TRUE for complete solutions.
+knitr::opts_chunk$set(echo = TRUE)
+#load libraries
+library(tidyverse)
+library(car)
+```
+
+**1.** Consider the data matrix
+
+\begin{align*}
+\bmX=\bbmx-1&3&-2\\2&4&2\\5&2&3\ebmx
+\end{align*}
+
+(a) Calculate the matrix of deviations (residuals), **X** - **1**$\overline{\textbf{x}}^\prime$.  Is this matrix of full rank?  Explain.
+(b) Determine **S** and Calculate the generalized variance |**S**|.
+(c) Using the result in (b), calculate the total sample variance.
+
+Hint:  total sample variance is another generalization of variance and is defined to be $s_{11}$ + $s_{22}$ + \dots + $s_{pp}$.
+
+a)
+
+Calculate the mean vector of **X**,
+\begin{align*}
+   \overline{\textbf{x}} = \bbmx\frac{(-1 + 2 +5)}{3}\\[6pt]\frac{(3 + 4 + 2)}{3}\\[6pt]\frac{(-2 + 2 + 3)}{3}\ebmx = \bbmx2\\3\\1\ebmx\\
+\end{align*}
+
+Next, calculate **1**$\overline{\textbf{x}}^\prime$,
+\begin{align*}
+  \textbf{1}\overline{\textbf{x}}^\prime = \bbmx1\\1\\1\ebmx \bbmx2 & 3 & 1\ebmx = \bbmx2 & 3 & 1\\2 & 3 & 1\\2 & 3 & 1\ebmx\\
+\end{align*}
+
+Finally, calculate **X** - **1**$\overline{\textbf{x}}^\prime$,
+
+\begin{align*}
+  \textbf{X} - \textbf{1}\overline{\textbf{x}}^\prime = \bbmx(-1-2) & (3-3) & (-2-1)\\(2-2) & (4-3) & (2-1)\\(5-2) & (2-3) & (3-1)\ebmx = \bbmx-3 & 0 & -3\\0 & 1 & 1\\3 & -1 & 2\ebmx
+\end{align*}
+
+No, the matrix of deviations is not full rank.  Column 3 is a linear combination of columns 1 and 2.  Adding columns 1 and 2 together will produce column 3.  Therefore, the matrix cannot be full rank.
+
+b)
+
+The general formula for **S** is **S**= $(n-1)^{-1}\textbf{D}^{T}\textbf{D}$, where **D** is the matrix of deviations.
+
+\begin{align*}
+  \textbf{S} = 0.5\bbmx-3&0&3\\0&1&-1\\-3&1&2\ebmx \bbmx-3&0&-3\\0&1&1\\3&-1&2\ebmx\
+  = \bbmx-1.5&0&1.5\\0&0.5&-0.5\\-1.5&.5&1\ebmx \bbmx-3&0&-3\\0&1&1\\3&-1&2\ebmx
+\end{align*}
+
+\begin{align*}
+ -3\bbmx-1.5\\0.0\\-1.5\ebmx + 0\bbmx0.0\\0.5\\0.5\ebmx + 3\bbmx1.5\\-0.5\\1.0\ebmx = \bbmx(4.5 + 0.0 + 4.5)\\(0.0 + 0.0 - 1.5)\\(4.5 + 0.0 + 3.0)\ebmx = \bbmx9.0\\-1.5\\7.5\ebmx
+ \end{align*}
+ 
+\begin{align*}
+0\bbmx-1.5\\0.0\\-1.5\ebmx + 1\bbmx0.0\\0.5\\0.5\ebmx - 1\bbmx1.5\\-0.5\\1.0\ebmx = \bbmx(0.0 + 0.0 - 1.5)\\(0.0 + 0.5 + 0.5)\\(0.0 + 0.5 - 1.0)\ebmx = \bbmx-1.5\\1.0\\-0.5\ebmx
+ \end{align*}
+ 
+\begin{align*}
+ -3\bbmx-1.5\\0.0\\-1.5\ebmx + 1\bbmx0.0\\0.5\\0.5\ebmx + 2\bbmx1.5\\-0.5\\1.0\ebmx = \bbmx(4.5 + 0.0 + 3.0)\\(0.0 + 0.5 - 1.0)\\(4.5 + 0.5 + 2.0)\ebmx = \bbmx7.5\\-0.5\\7.0\ebmx
+ \end{align*}
+ 
+\begin{align*}
+  \textbf{S} = \bbmx-9.0&-1.5&7.5\\-1.5&1.0&-0.5\\7.5&-0.5&7.0\ebmx
+\end{align*}
+
+Next, calculate the determinent of S or |**S**|,
+
+|**S**| = 9(7(1)-(-0.5)(-0.5)) - (-1.5)((-1.5)(7)-(-0.5)(7.5)) + 7.5((-1.5)(-0.5) - (7.5)(1))
+
+ = 9(7 - 0.25) + 1.5(-10.5 + 3.75) + 7.5(0.75 - 7.5)
+
+ = 9(6.75) + 1.5(-6.75) + 7.5(-6.75)
+
+ = 0
+ 
+
+c)
+
+The total sample variance is defined as $s_{11}$ + $s_{22}$ + \dots + $s_{pp}$,
+
+Therefore, Total Sample Variance = 9 + 1 + 7 = 17
+
+**2.** In northern climates, roads must be cleared of snow quickly following a storm.  One measure of storm severity is $x_1$ = its duration in hours, while the effectiveness of snow removal can be quantified by $x_2$ = the number of hours crews, men, and machine, spend to clear the snow.  Here are the results for 25 incidents in Wisconsin.
+
+**Calculate the mean vector, the covariance matrix, and the correlation matrix.**
+\pagebreak
+
+\begin{center}
+$\textbf{Table 3.2 - Snow Data}$
+\end{center}
+
+```{r echo=FALSE, out.width='100%', fig.align="center"}
+knitr::include_graphics('./HW2_Problem2_Table3_2.jpg')
+```
+
+Calculate the mean vector,
+
+\begin{align*}
+  \textbf{SD}= \bbmx12.5&13.7\\14.5&16.5\\8.0&17.4\\9.0&11.0\\19.5&23.6\\8.0&13.2\\9.0&32.1\\7.0&12.3\\7.0&11.8\\                              9.0&24.4\\6.5&18.2\\10.5&22.0\\10.0&32.5\\4.5&18.7\\7.0&15.8\\8.5&15.6\\6.5&12.0\\8.0&12.8\\                            3.5&26.1\\8.0&14.5\\17.5&42.3\\10.5&17.5\\12.0&21.8\\6.0&10.4\\13.0&25.6\ebmx
+\end{align*}
+
+\begin{align*}
+   \overline{\textbf{SD}} = \bbmx\frac{\sum\,(SD\, Column\, 1)}{25}\\[6pt]\frac{\sum\, (SD\, Column\, 2)}{25}\ebmx
+   =\bbmx9.42\\19.272\ebmx
+\end{align*}
+
+Calculate the covariance matrix,
+
+First calculate the matrix of deviations (residuals), **SD** - **1**$\overline{\textbf{SD}}^\prime$:
+
+\begin{align*}
+   \textbf{1}\overline{\textbf{SD}}^\prime = \bbmx1\\1\\1\\1\\1\\1\\1\\1\\1\\1\\1\\1\\1\\1\\1\\1\\1\\1\\1\\1\\1\\1\\1\\1\\1\ebmx          \bbmx9.42&19.272\ebmx\
+   = \bbmx9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\ebmx
+\end{align*}
+
+\begin{align*}
+   \textbf{SD} - \textbf{1}\overline{\textbf{SD}}^\prime = \bbmx12.5&13.7\\14.5&16.5\\8.0&17.4\\9.0&11.0\\19.5&23.6\\8.0&13.2\\9.0&32.1\\7.     0&12.3\\7.0&11.8\\9.0&24.4\\6.5&18.2\\10.5&22.0\\10.0&32.5\\4.5&18.7\\7.0&15.8\\8.5&15.6\\6.5&12.0\\8.0&12.8\\          3.5&26.1\\8.0&14.5\\17.5&42.3\\10.5&17.5\\12.0&21.8\\6.0&10.4\\13.0&25.6\ebmx - \bbmx9.42 & 19.272\\9.42 &              19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 &                19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 &                19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 & 19.272\\9.42 &                19.272\\9.42 & 19.272\\9.42 & 19.272\ebmx = \bbmx3.08& -5.572\\5.08& -2.772\\-1.42& -1.872\\-0.42& -8.272\\10.08&       4.328\\-1.42& -6.072\\-0.42& 12.828\\-2.42& -6.972\\-2.42& -7.472\\ -0.42&  5.128\\-2.92& -1.072\\1.08&                 2.728\\0.58& 13.228\\-4.92& -0.572\\-2.42& -3.472\\-0.92& -3.672\\-2.92& -7.272\\-1.42& -6.472\\-5.92&                  6.828\\-1.42& -4.772\\8.08& 23.028\\1.08& -1.772\\2.58&  2.528\\-3.42& -8.872\\3.58&  6.328\ebmx
+\end{align*}
+
+The general formula for the covariance matrix,**S**, is **S**= $(n-1)^{-1}D^{\prime}D$, where **D** is the matrix of deviations.
+
+\begin{align*}
+  \textbf{S} = (1/24)*(\textbf{SD} - \textbf{1}\overline{\textbf{SD}}^\prime)^\prime*(\textbf{SD} - \textbf{1}\overline{\textbf{SD}}^\prime)
+  = \bbmx14.13917& 13.47267\\13.47267& 62.23877\ebmx
+\end{align*}
+
+From the covariance matrix we can calculate the correlation matrix **R**.  $s_{11}$ and $s_{22}$ are correlated with themselves so their correlation is 1.  The correlation of $r_{12}$ = $r_{21}$ and is calculated as follows:
+
+
+$r_{12}$ = $r_{21}$ = $\frac{s_{12}}{\sqrt{s_{11}}\sqrt{s_{22}}}$ = $\frac{13.47267}{\sqrt{14.13917}\sqrt{62.23877}}$ = 0.4542
+
+The correlation matrix **R** is:
+
+\begin{align*}
+  \textbf{R} = \bbmx1.0000 & 0.4542\\0.4542 & 1.0000\ebmx
+\end{align*}
+
+**3.** Evaluate $T^2$ for testing $H_0$: $\boldsymbol\mu$ = $[7 \;\ 11]^T$, using the data:
+
+\begin{align*}
+  \textbf{X} = \bbmx2 & 12\\8 & 9\\6 & 9\\8& 10\ebmx
+\end{align*}
+
+Calculate the mean vector of **X**,
+\begin{align*}
+  \overline{\textbf{x}} = \bbmx\frac{(2 + 8 + 6 + 8)}{4}\\[6pt]\frac{(12 + 9 + 9 + 10}{4}\ebmx = \bbmx6\\10\ebmx\\
+\end{align*}
+
+Calculate the variance/covariance matrix **S**,
+
+$s_{11} = \frac{(2-6)^2 + (8-6)^2 + (6-6)^2 + (8-6)^2}{4-1} = \frac{16 + 4 + 0 + 4}{3} = 8$
+
+$s_{12} = s_{21} = \frac{(2-6)(12-10) + (8-6)(9-10) + (6-6)(9-10) + (8-6)(10-10)}{3} = -\frac{10}{3}$
+
+$s_{22} = \frac{(12-10)^2 + (9-10)^2 + (9-10)^2 + (10-10)^2}{4-1} = \frac{4 + 1 + 1 + 0}{3} = 2$
+
+\begin{align*}
+  \textbf{S} = \bbmx8 & 3.\overline{3}\\3.\overline{3} & 2\ebmx\\
+\end{align*}
+
+Calculate **S**$^{-1}$,
+
+\begin{align*}
+  \textbf{S}^{-1} = \frac{1}{(8)(2)-(-3.\overline{3})(-3.\overline{3})} * \bbmx2 & 3.\overline{3}\\3.\overline{3} & 8\ebmx =                    \bbmx0.40\overline{90} & 0.68\overline{18}\\0.68\overline{18} & 1.63\overline{63}\ebmx
+\end{align*}
+
+Calculate $T^2$ using the general formula n * ($\overline{\textbf{x}}$ - $\mu_{0}$)$^\prime$ $\cdot$ $\textbf{S}^{-1}$ * ($\overline{\textbf{x}}$ - $\mu_0$),
+
+\begin{align*}
+  T^{2} = 4\bbmx-1 & -1\ebmx \bbmx0.40\overline{90} & 0.68\overline{18}\\0.68\overline{18} & 1.63\overline{63}\ebmx \bbmx-1\\-1\ebmx =        13.6\overline{36}
+\end{align*}
+
+$T^2$ has the distribution $\frac{(n-1)p}{(n-p)}$$F_{p,n-p}$$(\alpha)$,
+
+$\frac{(n-1)p}{(n-p)}$$F_{p,n-p}$$(0.95)$ = $\frac{(4-1)2}{(4-2)}$$F_{2,4-2}$$(0.05)$ = $3\cdot19$ = 57
+
+Conclusion: since $T^2$ = $13.6\overline{36}$ < 57 we can conclude that we do not have enough evidence to reject $H_0$ that $\boldsymbol\mu$ = $[7 \;\ 11]^T$ at the 0.05 level of significance.
+
+**4.** A physical anthropologist performed a mineral analysis of nine ancient Peruvian hairs.  The results for chromium ($x_1$) and strontium ($x_2$) levels, in parts per million (ppm), were as follows:
+
+```{r echo=FALSE, out.width='100%', fig.align="center"}
+knitr::include_graphics('./HW2_Problem4_Table.jpg')
+```
+
+It is known that low levels (less than or equal to 0.100 ppm) of chromium suggest the presence of diabetes, while strontium is an indication of animal protein intake.
+
+(a) Construct and plot a 90% confidence ellipse for the population mean vector for $\boldsymbol\mu$ = $[\mu_1, \mu_2]^T$, assuming that these nine Peruvian hairs represent a random sample from the individuals belonging to a particular ancient Peruvian culture.
+(b) Test the hypothesis that $\boldsymbol\mu$ = $[0.30\:\ 10]^T$.  Discuss whether this mean vector is a plausible value for $\boldsymbol\mu$.
+(c) Do these data appear to be bivariate normal? Discuss their status with reference to Q-Q plots and a scatter diagram.  If the data are not bivariate normal, what implications does this have for the results of (a) and (b)?
+(d) Repeat the analysis with the obvious "outlying" observation removed.  Do the inferences change?  Comment.
+
+a)
+
+```{r}
+#Create a matrix of observations for Chromium and Strontium:
+Ch_col = c(0.48, 40.53, 2.19, 0.55, 0.74, 0.66, 0.93, 0.37, 0.22)
+St_col = c(12.57, 73.68, 11.13, 20.03, 20.29, 0.78, 4.64, 0.43, 1.08)
+ChSt_mat = cbind(Ch_col, St_col)
+
+#Create a mean vector of observations:
+ChSt_mean = apply(ChSt_mat, 2, mean)
+```
+
+\begin{align*}
+   \overline{\textbf{x}} = \bbmx 5.186\\16.070\ebmx
+\end{align*}
+
+```{r}
+#Create a covariance matrix:
+Cov_ChSt = cov(ChSt_mat)
+
+#Calculate the confidence ellipse radius using R
+n = 9; p = 2; alpha = 0.9
+rad_val = sqrt((n-1)*p/(n*(n-p))*qf(alpha,p,n-p))
+```
+
+\begin{align*}
+   \textbf{S} = \bbmx 176.0042 & 287.2412\\287.2412 & 527.8493\ebmx
+\end{align*}
+
+Plot the 90% joint confidence ellipse for the population mean vector $\boldsymbol\mu = [\mu_1 \:\ \mu_2]^T$,
+
+```{r}
+plot(ellipse(center = ChSt_mean, shape = Cov_ChSt ,radius = rad_val, draw=FALSE),type="l",
+xlab="Chromium Concentration",ylab="Strontium Concentration", xlim=c(-10,20), ylim=c(-5,75),
+main = "90% Confidence Ellipse")
+points(ChSt_mat, pch = 19, col = "orange", cex = 0.5)
+points(ChSt_mean[1],ChSt_mean[2],col="red",cex=2,pch=4)
+```
+
+***Figure 4.1***. 90% joint confidence ellipse for the sample mean vector $\boldsymbol\mu$ = $[5.186 \:\ 16.070]^T$.  The red X is the center of the ellipse and represents the sample mean vector.  The orange dots represent the concentration of Chromium and Strontium in the sample of Peruvian hairs.
+
+b)
+
+State the null hypothesis and the alternative,
+
+$H_0 = \boldsymbol\mu = [0.30 \:\ 10]^T$
+vs.
+$H_a = \boldsymbol\mu \neq [0.30 \:\ 10]^T$
+
+State the signficance level for the test,
+
+For this test we will utilize $\alpha$ = 0.10
+
+Calculate the test statistic $T^2$,
+
+```{r}
+#Create a vector for the hypothesized values for the test
+hyp_vect = rbind(0.30, 10)
+
+#Calculate the test statistic
+Tsq = 9*t(ChSt_mean - hyp_vect)%*%solve(Cov_ChSt)%*%(ChSt_mean - hyp_vect)
+```
+
+$T^2$ = 1.772481
+
+Calculate the critical value $\frac{(n-1)p}{(n-p)}F_{p,n-p}(0.10)$,
+
+```{r}
+#Calculate the critical value
+F_crit = 8*2/7*qf(0.90,2,7)
+```
+
+Critical Value = 7.445582
+
+State the rejection criteria,
+
+We will reject $H_0$ if our test statistic is greater than the critical value of 7.445582.
+
+$T^2$ = 1.772481 < 7.445582,
+
+Therefore, at $\alpha = 0.10$ we will fail to reject $H_0$ and conclude that there is not sufficient evidence that the true mean vector differs from $[0.30 \:\ 10]^T$.
+
+c)
+
+```{r}
+#sort the sample data for Chromium and Strontium concentration,
+sorted_Cr = sort(Ch_col)
+sorted_St = sort(St_col)
+
+```
+
+Plot the sorted sample vs. the normal quantiles for the Chromium and Strontium data sets,
+
+```{r}
+
+par(mfrow = c(1,2))
+
+plot(qnorm(1:9/(9+1)), sorted_Cr, xlab  = " Normal Quantiles", ylab = "Sorted Chromium Sample",
+main = "Q-Q Plot for Chromium Data")
+
+plot(qnorm(1:9/(9+1)), sorted_St, xlab  = " Normal Quantiles", ylab = "Sorted Strontium Sample",
+main = "Q-Q Plot for Strontium Data")
+```
+
+***Figure 4.2***. Normal Quantile-Quantile (Q-Q) plots for the Chromium and Strontium data sets.
+
+Based on the Q-Q plots for the data these data do not appear bivariate normal.  The effect of the outlier is very pronounced in the Q-Q plot.  The Q-Q plot is not very linear in both the Chromium and Strontium data set due to the presence of a suspected outlier.
+
+The results of (a) and (b) are predicated on an assumption of normality in the data.  If the normal assumption isn't accurate then the results of the analysis itself are of questionable validity.  More specifically, the $T^2$ statistic is constructed based upon the assumption of normality.  If the normality assumption is not true then the basis of the $T^2$ statistic would also not be true.  One solution would be to remove the clear outlying data point and repeat the analysis to see if the normality assumption can be validated and thus the results of the analysis accepted.
+
+d)
+
+The obvious "outlier" in this data set is the point $x_1$ = 40.58 and $x_2$ = 73.68.  If we removed those points from the respective data sets we can repeat the analysis to determine what effect it has on our assumptions and conclusions.
+
+```{r} 
+#Create a matrix of observations for Chromium and Strontium omitting the outlier:
+Ch_col1 = c(0.48, 2.19, 0.55, 0.74, 0.66, 0.93, 0.37, 0.22)
+St_col1 = c(12.57, 11.13, 20.03, 20.29, 0.78, 4.64, 0.43, 1.08)
+ChSt_mat1 = cbind(Ch_col1, St_col1)
+
+#Create a mean vector of observations:
+ChSt_mean1 = apply(ChSt_mat1, 2, mean)
+```
+
+\begin{align*}
+   \overline{\textbf{x}} = \bbmx 0.76750\\8.86875\ebmx
+\end{align*}
+
+```{r}
+#Create a covariance matrix:
+Cov_ChSt1 = cov(ChSt_mat1)
+
+#Calculate the critical value using R
+n = 8; p = 2; alpha = 0.9
+rad_val1 = sqrt((n-1)*p/(n*(n-p))*qf(alpha,p,n-p))
+```
+
+\begin{align*}
+   \textbf{S} = \bbmx 0.3786 & 1.0303\\1.0303 & 69.8596\ebmx
+\end{align*}
+
+Plot the 90% joint confidence ellipse for the population mean vector $\boldsymbol\mu = [\mu_1 \:\ \mu_2]^T$,
+
+```{r}
+plot(ellipse(center = ChSt_mean1, shape = Cov_ChSt1 ,radius = rad_val1, draw=FALSE),type="l",
+xlab="Chromium Concentration",ylab="Strontium Concentration", xlim=c(-1,9), ylim=c(-5,25),
+main = "90% Confidence Ellipse")
+points(ChSt_mat1, pch = 19, col = "blue", cex = 0.9)
+points(ChSt_mean1[1],ChSt_mean1[2],col="red",cex=2,pch=4)
+```
+
+***Figure 4.3***. 90% joint confidence ellipse for the sample mean vector $\boldsymbol\mu$ = $[0.76750 \:\ 8.86875]^T$.  The red X is the center of the ellipse and represents the sample mean vector.  The blue dots represent the concentration of Chromium and Strontium in the sample of Peruvian hairs.
+
+State the null hypothesis and the alternative,
+
+$H_0 = \boldsymbol\mu = [0.30 \:\ 10]^T$
+vs.
+$H_a = \boldsymbol\mu \neq [0.30 \:\ 10]^T$
+
+State the signficance level for the test,
+
+For this test we will utilize $\alpha$ = 0.10
+
+Calculate the test statistic $T^2$,
+
+```{r}
+#Create a vector for the hypothesized values for the test
+hyp_vect1 = rbind(0.30, 10)
+
+#Calculate the test statistic
+Tsq1 = 8*t(ChSt_mean1 - hyp_vect1)%*%solve(Cov_ChSt1)%*%(ChSt_mean1 - hyp_vect1)
+```
+
+$T^2$ = 5.307872
+
+Calculate the critical value $\frac{(n-1)p}{(n-p)}F_{p,n-p}(0.10)$,
+
+```{r}
+#Calculate the critical value
+F_crit1 = 7*2/6*qf(0.90,2,6)
+```
+
+Critical Value = 8.081043
+
+State the rejection criteria,
+
+We will reject $H_0$ if our test statistic is greater than the critical value of 8.081043.
+
+$T^2$ = 5.307872 < 8.081043,
+
+Therefore, at $\alpha = 0.10$ we will fail to reject $H_0$ and conclude that there is not sufficient evidence that the true mean vector differs from $[0.30 \:\ 10]^T$.
+
+```{r}
+#sort the sample data for Chromium and Strontium concentration,
+sorted_Cr1 = sort(Ch_col1)
+sorted_St1 = sort(St_col1)
+```
+
+Plot the sorted sample vs. the normal quantiles for the Chromium and Strontium data sets,
+
+```{r}
+
+par(mfrow = c(1,2))
+
+plot(qnorm(1:8/(8+1)), sorted_Cr1, xlab  = " Normal Quantiles", ylab = "Sorted Chromium Sample",
+main = "Q-Q Plot for Chromium, \n Outlier Removed")
+
+plot(qnorm(1:8/(8+1)), sorted_St1, xlab  = " Normal Quantiles", ylab = "Sorted Strontium Sample",
+main = "Q-Q Plot for Strontium, \n Outlier Removed")
+```
+
+***Figure 4.4***. Normal Quantile-Quantile (Q-Q) plots for the Chromium and Strontium data sets with the outlier values removed.
+
+With the outlier removed we still fail to reject $H_0$ and have the same conclusion that we don't have sufficient evidence that the true mean vector differs from $[0.30 \:\ 10]^T$.  Another way to say this is the mean vector  $\boldsymbol\mu$ = $[0.30\:\ 10]^T$ is plausible for $\boldsymbol\mu$.
+
+The Q-Q plots for both Chromium and Strontium were replotted after removing the outlier from the data set.  Both sets of data still do not appear to be normally distributed.  Since this is the case we should still be suspect of the result since we are not able to validate our assumption of normally distributed data. 
+
+**5.** Municipal waste water treatment plants are required by law to monitor their discharges into rivers and streams on a regular basis.  Concerns about the reliability of data from one of these self-monitoring programs led to a study in which samples of effluent were divided and sent to two laboratories for testing.  One-half of each sample was sent to the Wisconsin State Laboratory of Hygiene, and one-half were sent to a private commercial laboratory routinely used in the monitoring program.  Measurements of biochemical oxygen demand (BOD) and suspended solids (SS) were obtained for n = 11 sample splits, from the two laboratories.
+
+\begin{center}
+$\textbf{Table 6.1 - Effluent Data}$
+\end{center}
+
+```{r echo=FALSE, out.width='100%', fig.align="center"}
+knitr::include_graphics('./HW2_Problem5_Table6_1.jpg')
+```
+
+Do the laboratories' chemical analyses agree?  If differences exist, what is their nature?
+
+First begin by calculating the differences in the measurements between the two labs.  Calculate a $T^2$-statistic and test $H_0$: **d** = $[d_1\:\ d_2]^T$ = $[ 0\:\ 0]^T$.
+
+Start by creating a matrix of the differences of observations between labs for both parameters BOD and SS,
+
+\begin{align*}
+   \textbf{D} = \bbmx(6-25) & (27 - 15)\\(6-28) & (23-13)\\(18-36) & (64-22)\\(8-35) & (44-29)\\(11-15) & (30-31)\\(34-44) & (75 - 64)\\(28-42) & (26-30)\\(71-54) & (124-64)\\(43-34) & (54-56)\\(33-29) & (30-20)\\(20-39) &(14-21)\ebmx
+   = \bbmx-19 & 12\\-22 & 10\\-18 & 42\\-27 & 15\\-4 & -1\\-10 & 11\\-14 & -4\\17 & 60\\9 & -2\\4 & 10\\-19 & -7\ebmx
+\end{align*}
+
+Next, calculate the mean vector $\overline{\textbf{d}}$,
+
+\begin{align*}
+   \overline{\textbf{d}} = \bbmx\frac{(-19 -22  -18  -27  -4  -10  -14 + 17 + 9 + 4 -19)}{11}\\[6pt]\frac{(12 + 10 + 42 + 15 - 1 + 11 - 4 + 60 - 2 + 10 - 7)}{11}\ebmx = \bbmx-9.36\\13.27\ebmx
+\end{align*}
+
+Then, calculate the matrix of deviations **D** - **1**$\bar{\textbf{d}}^\prime$,
+
+\begin{align*}
+   \textbf{D} - \textbf{1}\bar{\textbf{d}}^\prime \bbmx-19 + 9.36 & 12 - 13.27\\-22 + 9.36 & 10 - 13.27\\-18 + 9.36 & 42 - 13.27\\-27 + 9.36 & 15 - 13.27\\-4 + 9.36 & -1 - 13.27\\-10 + 9.36 & 11 - 13.27\\-14 + 9.36 & -4 - 13.27\\17 + 9.36 & 60 - 13.27\\9 + 9.36 & -2 - 13.27\\4 + 9.36 & 10 - 13.27\\-19 + 9.36 & -7 - 13.27\ebmx = \bbmx-9.63 & -1.27\\-12.63 & -3.27\\-8.63 & 28.72\\-17.63 & 1.72\\5.36 & -14.27\\-0.63 & -2.27\\-4.63 & -17.27\\26.36 & 46.72\\18.36 & -15.27\\13.36 & -3.27\\-9.63 & -20.27\ebmx
+\end{align*}
+
+Calculate the variance/covariance matrix using **S**= $(n-1)^{-1}(\textbf{D} - \textbf{1}\overline{\textbf{d}}^\prime)^T(\textbf{D} - \textbf{1}\overline{\textbf{d}}^\prime)$,
+
+\begin{align*}
+   \textbf{S} =  (\frac{1}{10})(\textbf{D} - \textbf{1}\bar{\textbf{d}}^\prime)^T(\textbf{D} - \textbf{1}\bar{\textbf{d}}^\prime)
+   =\bbmx 199.25 & 88.31\\88.31 & 418.62\ebmx
+\end{align*}
+
+Now calculate $\textbf{S}^{-1}$,
+
+\begin{align*}
+   \textbf{S}^{-1} = \frac{1}{(199.25*418.62)-(88.31)(88.31)} \bbmx418.62 & -88.31\\-88.31 & 199.25\ebmx
+   = \bbmx0.0055 & -0.0012\\-0.0012 & 0.0026\ebmx
+\end{align*}
+
+Finally, calculate $T^2$ and compare with $\frac{(n-1)p}{(n-p)}$$F_{p,n-p}$$(0.05)$,
+
+\begin{align*}
+  T^{2} = 11\bbmx-9.36 & 13.27\ebmx \bbmx0.0055 & -0.0012\\-0.0012 & 0.0026\ebmx \bbmx-9.36\\13.27\ebmx =  13.64
+\end{align*}
+
+Conclusion:
+
+Using R we can find that $\frac{(n-1)p}{(n-p)}F_{p,n-p}(0.05)$ is 9.46.  Since $T^2$ = 13.64 > 9.46 we will reject $H_0$ that $\textbf{d}$ = $[0 \:\ 0]^T$ and conclude that there is a difference in means between the measurements of the two laboratories.  From an inspection of the data it generally appears that the commercial lab reports lower values for BOD and higher values for SS than the State Lab of Hygiene.
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+
+ 
+  
+  
+  
+ 
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
